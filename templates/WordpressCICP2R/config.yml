@@ -1,0 +1,5 @@
+name: Wordpress CICP2R
+description: |
+	Wordpress Public site of CICP2R
+version: v0.0.1
+category: Rancher Services
