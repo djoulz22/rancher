@@ -1,0 +1,64 @@
+wordpress-cicp2r-datas:
+  labels:
+    io.rancher.scheduler.global: 'true'
+    io.rancher.container.pull_image: always
+  tty: true
+  image: 116539552606.dkr.ecr.us-east-1.amazonaws.com/djoulz22-registry:wordpress_cicp2r-datas
+  stdin_open: true
+lb-cicp2r:
+  ports:
+  - 80:80
+  labels:
+    io.rancher.scheduler.global: 'true'
+  tty: true
+  image: rancher/load-balancer-service
+  links:
+  - wordpress-cicp2r:wordpress-cicp2r
+  stdin_open: true
+wordpress-cicp2r:
+  labels:
+    io.rancher.scheduler.global: 'true'
+    io.rancher.sidekicks: wordpress-cicp2r-datas
+    io.rancher.container.pull_image: always
+  tty: true
+  image: 116539552606.dkr.ecr.us-east-1.amazonaws.com/djoulz22-registry:wordpress_nginx_glusterfs
+  volumes_from:
+  - wordpress-cicp2r-datas
+  volumes_from:
+  - glusterfs-data
+  stdin_open: true
+glusterfs-server:
+  image: rancher/glusterfs:v0.1.3
+  cap_add:
+    - SYS_ADMIN
+  volumes_from:
+    - glusterfs-data
+  labels:
+    io.rancher.container.hostname_override: container_name
+    io.rancher.sidekicks: glusterfs-peer,glusterfs-data,glusterfs-volume-create
+  command: "glusterd -p /var/run/gluster.pid -N"
+glusterfs-peer:
+  image: rancher/glusterfs:v0.1.3
+  net: 'container:glusterfs-server'
+  volumes_from:
+    - glusterfs-data
+  labels:
+    io.rancher.container.hostname_override: container_name
+  command: /opt/rancher/peerprobe.sh
+glusterfs-data:
+  image: rancher/glusterfs:v0.1.3
+  command: /bin/true
+  volumes:
+    - /var/run
+  labels:
+    io.rancher.container.hostname_override: container_name
+    io.rancher.container.start_once: true
+glusterfs-volume-create:
+  image: rancher/glusterfs:v0.1.3
+  command: /opt/rancher/replicated_volume_create.sh
+  net: 'container:glusterfs-server'
+  volumes_from:
+    - glusterfs-data
+  labels:
+    io.rancher.container.hostname_override: container_name
+    io.rancher.container.start_once: true

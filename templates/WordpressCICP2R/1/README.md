@@ -1,4 +1,4 @@
-# Wordpress CICP2R site v0.0.1
+# Wordpress CICP2R site v0.0.2
 
 
 ### Info:
