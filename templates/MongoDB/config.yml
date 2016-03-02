@@ -1,5 +1,5 @@
-name: MongoDB
+name: MongoDB-djz
 description: |
   MongoDB Replica Set.
-version: 3.0.0-rancher1
+version: 3.0.0-djoulz221
 category: Database

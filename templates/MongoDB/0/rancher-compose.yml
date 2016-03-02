@@ -1,6 +1,6 @@
 .catalog:
-  name: "MongoDB"
-  version: "3.0.0-rancher1"
+  name: "MongoDB-djz"
+  version: "3.0.0-djoulz221"
   description: "MongoDB Replica Set"
   minimum_rancher_version: v0.46.0
   questions:
